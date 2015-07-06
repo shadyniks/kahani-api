@@ -15,8 +15,12 @@ class UsersController < ApplicationController
   end
 
   def authenticate
-    user = User.authenticate(params[:email], params[:password])
-    render json: user
+    user = JSON.parse(User.authenticate(params[:email], params[:password]).to_json)
+    if user["id"].nil?
+      render json: user, :status => 400
+    else
+      render json: user
+    end
   end
 
   # POST /users

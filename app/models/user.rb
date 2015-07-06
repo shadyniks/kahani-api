@@ -20,7 +20,15 @@ class User < ActiveRecord::Base
 
 	def self.authenticate(email, password)
 		account = where("lower(email) = lower(?)", email).first if email.present?
-		account && account.has_password?(password) ? account : nil
+		if account
+			if account.has_password?(password)
+				account
+			else
+				{:error => "Authentication failed"}
+			end
+		else
+			{:error => "User doesn't exist"}
+		end
 	end
 
 	def has_password?(password)
